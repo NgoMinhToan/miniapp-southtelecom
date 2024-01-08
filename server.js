@@ -28,6 +28,12 @@ app.post('/getUserInfo', async (req, res) => {
     return res.send(data);
 });
 
+app.post('/sendFeedback', async (req, res) => {
+    console.log('Feedback:');
+    console.log(req.body);
+    return res.json({ status: true, message: 'Feedback saved successfully' });
+})
+
 // Start the server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {
