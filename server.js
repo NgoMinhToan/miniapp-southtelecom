@@ -45,8 +45,8 @@ app.post('/sendFeedback', async (req, res) => {
         console.log(JSON.stringify({ status: true, message: 'Feedback saved successfully', data: db_res }))
         return res.json({ status: true, message: 'Feedback saved successfully', data: db_res });
     }).catch(err => {
-        console.log(JSON.stringify({ status: false, error: err }))
-        return res.json({ status: false, error: err });
+        console.log(JSON.stringify({ status: false, error: err.toString(), errorObj: err }))
+        return res.json({ status: false, error: err.toString() });
     })
 })
 
