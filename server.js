@@ -46,7 +46,7 @@ app.post('/sendFeedback', async (req, res) => {
         const db_res = await postgresql_db.none('INSERT INTO feedback(id, user_id, full_name, phone, datetime, "desc") VALUES($1, $2, $3, $4, $5, $6)', [generateRandomId(50), body?.userId, body?.fullName, body?.userPhone, body?.feedbackDate, body?.desc])
         const data = db_res.data
         console.log(JSON.stringify({ status: true, message: 'Feedback saved successfully', data }))
-        const notion_res = await uploadNotionDatabase()
+        const notion_res = await uploadNotionDatabase({ fullName: body?.fullName, phone: body?.userPhone, desc: body?.desc })
         return res.json({ status: true, message: 'Feedback saved successfully', data, notion_data: notion_res.data })
 
     } catch (err) {
