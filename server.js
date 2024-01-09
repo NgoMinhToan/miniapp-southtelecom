@@ -7,6 +7,7 @@ const dotenv = require('dotenv');
 
 // Load environment variables from a .env file into process.env
 dotenv.config();
+const postgresql_db = require('./postgresql');
 
 // Create an Express application
 const app = express();
@@ -37,8 +38,14 @@ app.post('/getUserInfo', async (req, res) => {
 
 app.post('/sendFeedback', async (req, res) => {
     console.log('Feedback:');
-    console.log(req.body);
-    return res.json({ status: true, message: 'Feedback saved successfully' });
+    const { body } = req;
+    if (!body) res.json({ status: false, message: 'Feedback not save!' });
+
+    postgresql_db.none('INSERT INTO feedback(id, user_id, full_name, phone, datetime, desc) VALUES($1, $2, $3, $4, $5, $6)', [generateRandomId(50), body?.userId, body?.fullName, body?.userPhone, body?.feedbackDate, body?.desc]).then(db_res => {
+        return res.json({ status: true, message: 'Feedback saved successfully' });
+    }).catch(err => {
+        return res.json({ status: false, error: err });
+    })
 })
 
 // Start the server
@@ -46,3 +53,15 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Your app is listening on port ${PORT}`);
 });
+
+
+function generateRandomId(length) {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+    for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+
+    return result;
+}
