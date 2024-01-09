@@ -42,8 +42,10 @@ app.post('/sendFeedback', async (req, res) => {
     if (!body) res.json({ status: false, message: 'Feedback not save!' });
 
     postgresql_db.none('INSERT INTO feedback(id, user_id, full_name, phone, datetime, desc) VALUES($1, $2, $3, $4, $5, $6)', [generateRandomId(50), body?.userId, body?.fullName, body?.userPhone, body?.feedbackDate, body?.desc]).then(db_res => {
-        return res.json({ status: true, message: 'Feedback saved successfully' });
+        console.log(JSON.stringify({ status: true, message: 'Feedback saved successfully', data: db_res }))
+        return res.json({ status: true, message: 'Feedback saved successfully', data: db_res });
     }).catch(err => {
+        console.log(JSON.stringify({ status: false, error: err }))
         return res.json({ status: false, error: err });
     })
 })
