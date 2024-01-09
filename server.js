@@ -8,6 +8,7 @@ const dotenv = require('dotenv');
 // Load environment variables from a .env file into process.env
 dotenv.config();
 const postgresql_db = require('./postgresql');
+const { uploadNotionDatabase } = require('./notion.api');
 
 // Create an Express application
 const app = express();
@@ -41,13 +42,17 @@ app.post('/sendFeedback', async (req, res) => {
     const { body } = req;
     if (!body) res.json({ status: false, message: 'Feedback not save!' });
 
-    postgresql_db.none('INSERT INTO feedback(id, user_id, full_name, phone, datetime, "desc") VALUES($1, $2, $3, $4, $5, $6)', [generateRandomId(50), body?.userId, body?.fullName, body?.userPhone, body?.feedbackDate, body?.desc]).then(db_res => {
-        console.log(JSON.stringify({ status: true, message: 'Feedback saved successfully', data: db_res }))
-        return res.json({ status: true, message: 'Feedback saved successfully', data: db_res });
-    }).catch(err => {
+    try {
+        const db_res = await postgresql_db.none('INSERT INTO feedback(id, user_id, full_name, phone, datetime, "desc") VALUES($1, $2, $3, $4, $5, $6)', [generateRandomId(50), body?.userId, body?.fullName, body?.userPhone, body?.feedbackDate, body?.desc])
+        const data = db_res.data
+        console.log(JSON.stringify({ status: true, message: 'Feedback saved successfully', data }))
+        const notion_res = await uploadNotionDatabase()
+        return res.json({ status: true, message: 'Feedback saved successfully', data, notion_data: notion_res.data })
+
+    } catch (err) {
         console.log(JSON.stringify({ status: false, error: err.toString(), errorObj: err }))
         return res.json({ status: false, error: err.toString() });
-    })
+    }
 })
 
 // Start the server
