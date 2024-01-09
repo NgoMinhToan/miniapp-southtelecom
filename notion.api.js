@@ -53,7 +53,7 @@ const uploadNotionDatabase = async ({ fullName, phone, desc }) => {
 
     try {
         const res = await axios.request(config)
-        console.log(JSON.stringify(response.data));
+        console.log(JSON.stringify(res.data));
         return res.data;
     } catch (error) {
         console.log(error);
