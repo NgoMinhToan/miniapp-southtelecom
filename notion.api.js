@@ -38,7 +38,7 @@ const getData = ({ fullName, phone, desc }) => JSON.stringify({
 });
 
 
-export const uploadNotionDatabase = async ({ fullName, phone, desc }) => {
+const uploadNotionDatabase = async ({ fullName, phone, desc }) => {
     let config = {
         method: 'post',
         maxBodyLength: Infinity,
@@ -60,3 +60,5 @@ export const uploadNotionDatabase = async ({ fullName, phone, desc }) => {
         return false;
     }
 }
+
+module.exports = uploadNotionDatabase
