@@ -8,7 +8,7 @@ const dotenv = require('dotenv');
 // Load environment variables from a .env file into process.env
 dotenv.config();
 const postgresql_db = require('./postgresql');
-const { uploadNotionDatabase } = require('./notion.api');
+const uploadNotionDatabase = require('./notion.api');
 
 // Create an Express application
 const app = express();
