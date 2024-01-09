@@ -17,6 +17,13 @@ app.use(cors());
 // Middleware to parse JSON bodies
 app.use(express.json());
 
+app.get('/', (req, res) => {
+    res.json({
+        status: true,
+        message: 'Server is running!'
+    })
+})
+
 // Route to handle POST request for getUserInfo
 app.post('/getUserInfo', async (req, res) => {
     console.log('User Info:');
