@@ -1,5 +1,5 @@
 const axios = require('axios');
-const getData = ({ fullName, phone, desc }) => JSON.stringify({
+const getData = ({ fullName, userPhone, desc, userId, feedbackDate }) => JSON.stringify({
     "parent": {
         "database_id": process.env.NOTION_DB_ID
     },
@@ -11,7 +11,16 @@ const getData = ({ fullName, phone, desc }) => JSON.stringify({
             "title": [
                 {
                     "text": {
-                        "content": fullName
+                        "content": fullName || ''
+                    }
+                }
+            ]
+        },
+        "User ID": {
+            "rich_text": [
+                {
+                    "text": {
+                        "content": userId || ''
                     }
                 }
             ]
@@ -20,7 +29,7 @@ const getData = ({ fullName, phone, desc }) => JSON.stringify({
             "rich_text": [
                 {
                     "text": {
-                        "content": phone
+                        "content": userPhone || ''
                     }
                 }
             ]
@@ -29,16 +38,23 @@ const getData = ({ fullName, phone, desc }) => JSON.stringify({
             "rich_text": [
                 {
                     "text": {
-                        "content": desc
+                        "content": desc || ''
                     }
                 }
             ]
+        },
+        "DateTime": {
+            "date":
+            {
+                "start": feedbackDate ? new Date(feedbackDate).toISOString() : new Date().toISOString()
+            }
+
         }
     }
 });
 
 
-const uploadNotionDatabase = async ({ fullName, phone, desc }) => {
+const uploadNotionDatabase = async ({ fullName, userPhone, desc, userId, feedbackDate }) => {
     let config = {
         method: 'post',
         maxBodyLength: Infinity,
@@ -48,7 +64,7 @@ const uploadNotionDatabase = async ({ fullName, phone, desc }) => {
             'Content-Type': 'application/json',
             'Notion-Version': '2022-06-28',
         },
-        data: getData({ fullName, phone, desc })
+        data: getData({ fullName, userPhone, desc, userId, feedbackDate })
     };
 
     try {
