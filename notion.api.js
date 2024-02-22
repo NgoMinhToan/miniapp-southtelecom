@@ -1,5 +1,5 @@
 const axios = require('axios');
-const getData = ({ fullName, userPhone, desc, userId, feedbackDate }) => JSON.stringify({
+const getData = ({ fullName, userPhone, content, userId, feedbackDate, bizName, serviceType }) => JSON.stringify({
     "parent": {
         "database_id": process.env.NOTION_DB_ID
     },
@@ -34,11 +34,29 @@ const getData = ({ fullName, userPhone, desc, userId, feedbackDate }) => JSON.st
                 }
             ]
         },
-        "Description": {
+        "Content": {
             "rich_text": [
                 {
                     "text": {
-                        "content": desc || ''
+                        "content": content || ''
+                    }
+                }
+            ]
+        },
+        "Business Name": {
+            "rich_text": [
+                {
+                    "text": {
+                        "content": bizName || ''
+                    }
+                }
+            ]
+        },
+        "Service Type": {
+            "rich_text": [
+                {
+                    "text": {
+                        "content": serviceType || ''
                     }
                 }
             ]
@@ -54,7 +72,7 @@ const getData = ({ fullName, userPhone, desc, userId, feedbackDate }) => JSON.st
 });
 
 
-const uploadNotionDatabase = async ({ fullName, userPhone, desc, userId, feedbackDate }) => {
+const uploadNotionDatabase = async ({ fullName, userPhone, content, userId, feedbackDate, bizName, serviceType }) => {
     let config = {
         method: 'post',
         maxBodyLength: Infinity,
@@ -64,7 +82,7 @@ const uploadNotionDatabase = async ({ fullName, userPhone, desc, userId, feedbac
             'Content-Type': 'application/json',
             'Notion-Version': '2022-06-28',
         },
-        data: getData({ fullName, userPhone, desc, userId, feedbackDate })
+        data: getData({ fullName, userPhone, content, userId, feedbackDate, bizName, serviceType })
     };
 
     try {

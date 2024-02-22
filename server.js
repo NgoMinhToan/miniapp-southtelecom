@@ -41,13 +41,13 @@ app.post('/sendFeedback', async (req, res) => {
     console.log('Feedback:');
     const { body } = req;
     if (!body) res.json({ status: false, message: 'Feedback not save!' });
-    const { userId, fullName, userPhone, feedbackDate, desc } = body;
+    const { userId, fullName, userPhone, feedbackDate, content, bizName, serviceType } = body;
 
     try {
-        const db_res = await postgresql_db.none('INSERT INTO feedback(id, user_id, full_name, phone, datetime, "desc") VALUES($1, $2, $3, $4, $5, $6)', [generateRandomId(50), userId, fullName, userPhone, feedbackDate, desc])
+        const db_res = await postgresql_db.none('INSERT INTO feedback(id, user_id, full_name, phone, datetime, "desc", biz_name, service_type) VALUES($1, $2, $3, $4, $5, $6, $7, $8)', [generateRandomId(50), userId, fullName, userPhone, feedbackDate, content, bizName, serviceType])
         console.log(JSON.stringify({ status: true, message: 'Feedback saved successfully', data: db_res }))
 
-        const notion_data = await uploadNotionDatabase({ fullName, userPhone, desc, userId, feedbackDate })
+        const notion_data = await uploadNotionDatabase({ fullName, userPhone, content, userId, feedbackDate, bizName, serviceType })
         return res.json({ status: true, message: 'Feedback saved successfully', data: db_res, notion_data: notion_data })
 
     } catch (err) {
